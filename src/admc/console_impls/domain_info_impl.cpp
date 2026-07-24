@@ -23,6 +23,7 @@
 #include "console_impls/object_impl/object_impl.h"
 #include "console_impls/policy_root_impl.h"
 #include "console_impls/query_folder_impl.h"
+#include "console_impls/pinned_impl.h"
 #include "ad_interface.h"
 #include "item_type.h"
 #include "connection_options_dialog.h"
@@ -68,6 +69,7 @@ void DomainInfoImpl::refresh(const QList<QModelIndex> &index_list) {
         ConsoleObjectTreeOperations::console_object_tree_init(console, ad);
         console_policy_tree_init(console);
         console_query_tree_init(console);
+        console_pinned_tree_init(console);
         ConsoleObjectTreeOperations::console_tree_add_password_settings(console, ad);
         ConsoleObjectTreeOperations::console_tree_add_sites_container(console, ad);
         g_gplink_manager->update();

@@ -259,6 +259,7 @@ set(ADMC_SOURCES
     console_impls/policy_ou_impl.cpp
     console_impls/found_policy_impl.cpp
     console_impls/domain_info_impl.cpp
+    console_impls/pinned_impl.cpp
 
     permission_control_widgets/permissions_widget.cpp
     permission_control_widgets/creation_deletion_permissions_widget.cpp

@@ -70,6 +70,7 @@ enum StandardAction {
     StandardAction_Print,
     StandardAction_Refresh,
     StandardAction_Properties,
+    StandardAction_Toggle_Pin,
 };
 
 class ConsoleWidgetActions final {
@@ -190,6 +191,8 @@ public:
     QPersistentModelIndex domain_info_index();
 
     void hide_scope_and_results(bool hide);
+
+    QSet<QString> get_pinned();
 
 signals:
     // Emitted when selection in the whole console

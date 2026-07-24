@@ -20,6 +20,7 @@
  */
 
 #include "console_widget/console_widget.h"
+#include "console_impls/pinned_impl.h"
 #include "console_widget/console_widget_p.h"
 
 #include "console_widget/console_drag_model.h"
@@ -30,6 +31,7 @@
 #include "console_impls/item_type.h"
 #include "globals.h"
 #include "status.h"
+#include "console_impls/object_impl/object_impl.h"
 
 #include <QAction>
 #include <QApplication>
@@ -60,6 +62,7 @@ const QList<StandardAction> standard_action_list = {
     StandardAction_Print,
     StandardAction_Refresh,
     StandardAction_Properties,
+    StandardAction_Toggle_Pin,
 };
 
 QString results_state_name(const int type);
@@ -139,6 +142,8 @@ ConsoleWidget::ConsoleWidget(QWidget *parent)
     d->standard_action_map[StandardAction_Print] = new QAction(tr("Print"), this);
     d->standard_action_map[StandardAction_Refresh] = new QAction(tr("Refresh"), this);
     d->standard_action_map[StandardAction_Properties] = new QAction(tr("Properties"), this);
+    d->standard_action_map[StandardAction_Toggle_Pin] =
+        new QAction(tr("Pin"), this);
 
     // NOTE: need to add a dummy view until a real view is
     // added when a scope item is selected. If this is not
@@ -629,6 +634,10 @@ void ConsoleWidget::resizeEvent(QResizeEvent *event) {
     QWidget::resizeEvent(event);
 }
 
+QSet<QString> ConsoleWidget::get_pinned() {
+    return d->pinned_objects;
+}
+
 void ConsoleWidgetPrivate::add_actions(QMenu *menu) {
     // Add custom actions
     const QList<QAction *> custom_action_list = get_custom_action_list();
@@ -647,6 +656,7 @@ void ConsoleWidgetPrivate::add_actions(QMenu *menu) {
     menu->addAction(standard_action_map[StandardAction_Paste]);
     menu->addAction(standard_action_map[StandardAction_Print]);
     menu->addAction(standard_action_map[StandardAction_Refresh]);
+    menu->addAction(standard_action_map[StandardAction_Toggle_Pin]);
     menu->addSeparator();
     menu->addAction(standard_action_map[StandardAction_Properties]);
 }
@@ -1286,6 +1296,11 @@ void ConsoleWidgetPrivate::on_standard_action(const StandardAction action_enum) 
 
                 break;
             }
+            case StandardAction_Toggle_Pin: {
+                qWarning()<<"blah";
+                on_objects_pin_toggled(selected_of_type);
+                break;
+            }
         }
     }
 }
@@ -1349,6 +1364,20 @@ void ConsoleWidgetPrivate::on_results_activated(const QModelIndex &index) {
         ConsoleImpl *impl = get_impl(main_index);
         impl->activate(main_index);
     }
+}
+
+void ConsoleWidgetPrivate::on_objects_pin_toggled(
+    const QList<QModelIndex> &indexes) {
+    for (auto index : indexes) {
+        auto dn = index.data(ObjectRole_DN).toString();
+        qWarning() << dn;
+        if (pinned_objects.contains(dn)) {
+            pinned_objects.remove(dn);
+        } else {
+            pinned_objects.insert(dn);
+        }
+    }
+    impl_map[ItemType_Pinned]->refresh({get_pinned_tree_root(q)});
 }
 
 int console_item_get_type(const QModelIndex &index) {

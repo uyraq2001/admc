@@ -22,6 +22,7 @@
 #define ITEM_TYPE_H
 
 enum ItemType {
+    ItemType_Pinned,
     ItemType_Unassigned,
     ItemType_Object,
     ItemType_PolicyRoot,

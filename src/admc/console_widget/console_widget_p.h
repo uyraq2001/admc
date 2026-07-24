@@ -91,6 +91,7 @@ public:
 
     QPersistentModelIndex domain_info_index;
 
+    QSet<QString> pinned_objects;
 
     ConsoleWidgetPrivate(ConsoleWidget *q_arg);
 
@@ -129,6 +130,7 @@ public slots:
     void on_scope_context_menu(const QPoint &pos);
     void on_scope_expanded(const QModelIndex &index);
     void on_results_activated(const QModelIndex &index);
+    void on_objects_pin_toggled(const QList<QModelIndex> &indexes);
 };
 
 #endif /* CONSOLE_WIDGET_P_H */

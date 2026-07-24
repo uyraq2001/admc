@@ -37,6 +37,7 @@
 #include "console_impls/policy_root_impl.h"
 #include "console_impls/query_folder_impl.h"
 #include "console_impls/query_item_impl.h"
+#include "console_impls/pinned_impl.h"
 #include "console_widget/console_widget.h"
 #include "fsmo/fsmo_dialog.h"
 #include "globals.h"
@@ -483,6 +484,9 @@ void MainWindow::init_on_connect(AdInterface &ad) {
     auto query_folder_impl = new QueryFolderImpl(ui->console);
     ui->console->register_impl(ItemType_QueryFolder, query_folder_impl);
 
+    auto pinned_impl = new PinnedImpl(ui->console);
+    ui->console->register_impl(ItemType_Pinned, pinned_impl);
+
     query_item_impl->set_query_folder_impl(query_folder_impl);
 
     object_impl->set_toolbar_actions(ui->action_create_user, ui->action_create_group, ui->action_create_ou);
@@ -498,6 +502,7 @@ void MainWindow::init_on_connect(AdInterface &ad) {
     ConsoleObjectTreeOperations::console_object_tree_init(ui->console, ad);
     console_policy_tree_init(ui->console);
     console_query_tree_init(ui->console);
+    console_pinned_tree_init(ui->console);
     ConsoleObjectTreeOperations::console_tree_add_password_settings(ui->console, ad);
     ConsoleObjectTreeOperations::console_tree_add_sites_container(ui->console, ad);
     g_gplink_manager->update();
