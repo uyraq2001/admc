@@ -179,14 +179,11 @@ QSet<QAction *> PolicyImpl::get_custom_actions(const QModelIndex &index, const b
 QSet<StandardAction> PolicyImpl::get_standard_actions(const QModelIndex &index, const bool single_selection) const {
     UNUSED_ARG(index);
 
-    QSet<StandardAction> out;
-
-    out.insert(StandardAction_Delete);
+    QSet<StandardAction> out{StandardAction_Delete};
 
     if (single_selection) {
-        out.insert(StandardAction_Rename);
-        out.insert(StandardAction_Refresh);
-        out.insert(StandardAction_Properties);
+        out.unite({StandardAction_Rename, StandardAction_Refresh,
+            StandardAction_Properties});
     }
 
     return out;

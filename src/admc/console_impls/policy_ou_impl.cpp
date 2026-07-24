@@ -213,20 +213,12 @@ QSet<StandardAction> PolicyOUImpl::get_standard_actions(const QModelIndex &index
     UNUSED_ARG(index);
     UNUSED_ARG(single_selection);
 
-    QSet<StandardAction> out;
-
-    out.insert(StandardAction_Properties);
-
-    const bool can_refresh = console_item_get_was_fetched(index);
-    if (can_refresh) {
+    QSet<StandardAction> out{StandardAction_Properties};
+    if (console_item_get_was_fetched(index)) {
         out.insert(StandardAction_Refresh);
     }
-
-    const bool is_domain = index_is_domain(index);
-
-    if (!is_domain) {
-        out.insert(StandardAction_Rename);
-        out.insert(StandardAction_Delete);
+    if (!index_is_domain(index)) {
+        out.unite({StandardAction_Rename, StandardAction_Delete});
     }
 
     return out;

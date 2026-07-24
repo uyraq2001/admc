@@ -355,33 +355,23 @@ QSet<QAction *> ObjectImpl::get_disabled_custom_actions(const QModelIndex &index
 }
 
 QSet<StandardAction> ObjectImpl::get_standard_actions(const QModelIndex &index, const bool single_selection) const {
-    QSet<StandardAction> out;
-
-    out.insert(StandardAction_Properties);
+    QSet<StandardAction> out{StandardAction_Properties, StandardAction_Delete};
 
     // NOTE: only add refresh action if item was fetched,
     // this filters out all the objects like users that
     // should never get refresh action
-    const bool can_refresh = console_item_get_was_fetched(index);
-    if (can_refresh && single_selection && refresh_action_enabled) {
+    if (console_item_get_was_fetched(index) && single_selection &&
+        refresh_action_enabled) {
         out.insert(StandardAction_Refresh);
     }
 
     const QList<QString> renamable_class_list = {
-        CLASS_USER,
-        CLASS_GROUP,
-        CLASS_OU,
-        CLASS_SITE
-    };
-    const QString object_class =
-        index.data(ObjectRole_ObjectClasses).toStringList().last();
-    const bool can_rename =
-        (single_selection && renamable_class_list.contains(object_class));
-    if (can_rename) {
+        CLASS_USER, CLASS_GROUP, CLASS_OU, CLASS_SITE};
+    if (single_selection &&
+        renamable_class_list.contains(
+            index.data(ObjectRole_ObjectClasses).toStringList().last())) {
         out.insert(StandardAction_Rename);
     }
-
-    out.insert(StandardAction_Delete);
 
     return out;
 }
